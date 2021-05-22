@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>添加新文章</title>
+  <link rel="stylesheet" href="/admin/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/admin/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/admin/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="/admin/assets/css/admin.css">
+  <script src="/admin/assets/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+  <script>NProgress.start()</script>
+
+  <div class="main" style="padding-left:0;">
+    <nav class="navbar" style="left:0;">
+      <button class="btn btn-default navbar-btn fa fa-bars"  id="asideBtn"></button>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/home/logout"><i class="fa fa-sign-out"></i>退出登陆</a></li>
+      </ul>
+    </nav>
+    <div class="container-fluid">
+      <div class="page-title">
+        <h1>{{titleTip}}</h1>
+      </div>
+      <!-- 有错误信息时展示 -->
+      <!-- <div class="alert alert-danger">
+        <strong>错误！</strong>发生XXX错误
+      </div> -->
+      <form class="row" action="{{link}}" method="post" enctype="multipart/form-data">
+        <div class="col-md-9">
+          <div class="form-group">
+            <label for="title">标题</label>
+            <input id="title" class="form-control input-lg" type="text" placeholder="文章标题" name="title" value="{{findArticle && findArticle.title}}">
+          </div>
+          <div class="form-group">
+            <label for="content">内容</label>
+            <textarea id="content" class="form-control input-lg" cols="30" rows="10" placeholder="内容" name="content">{{findArticle && findArticle.content}}</textarea>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="feature">文章封面</label>
+            <img id="preview" class="help-block thumbnail" style="{{findArticle && findArticle.cover != null ? 'display: block' : 'display: none'}}" src="{{findArticle && findArticle.cover}}">
+            <!--这条可选多个文件 <input id="feature" class="form-control" type="file" name="cover" multiple>-->
+            <input id="feature" class="form-control" type="file" name="cover" value="{{findArticle && findArticle.cover}}">
+          </div>
+          <div class="form-group">
+            <label for="category">作者</label>
+            <input id="author" class="form-control" type="text" name="author" readonly value="{{@userInfo._id}}">
+          </div>
+          <div class="form-group">
+            <label for="created">发布时间</label>
+            <input id="created" class="form-control" type="datetime-local" name="publishDate">
+          </div>
+          <div class="form-group">
+            <input class="btn btn-primary" type="submit" value="{{btn}}">
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="aside" style="display:none;">
+    <div class="profile">
+      <img class="avatar" src="{{userInfo && userInfo.avatar ? userInfo.avatar : '/admin/assets/img/default.png'}}">
+      <h3 class="name">{{userInfo && userInfo.username}}</h3>
+    </div>
+    <ul class="nav">
+      <li>
+        <a href="/home/?page=1"><i class="fa fa-dashboard"></i>首页</a>
+      </li>
+      <li class="active">
+        <a href="#menu-posts" data-toggle="collapse">
+          <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
+        </a>
+        <ul id="menu-posts" class="collapse in">
+          <li><a href="/admin/article?page=1">所有文章</a></li>
+          <li class="active"><a href="/admin/article-edit">写文章</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/admin/user?page=1"><i class="fa fa-users"></i>用户</a>
+      </li>
+    </ul>
+  </div>
+
+  <script src="/admin/assets/vendors/jquery/jquery.js"></script>
+  <script src="/admin/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script>NProgress.done()</script>
+  <script type="text/javascript">
+    var file = document.querySelector('#feature');
+    var preview = document.querySelector('#preview');
+    file.onchange = function () {
+      // 创建文件读取对象
+      var reader = new FileReader();
+      // 用户选择的文件列表
+      reader.readAsDataURL(this.files[0]);
+      // 监听onload事件
+      reader.onload = function () {
+        // 将文件读取结果显示在页面
+        preview.src = reader.result;
+        preview.style = '';
+      }
+    }
+  </script>
+  <script type="text/javascript">
+    $('#asideBtn').click(function(){
+        $('#asideBtn').toggleClass('off');
+        if($('#asideBtn').hasClass('off')){
+            $('.aside').show();
+            $('.navbar').removeAttr("style"); 
+            $('.main').removeAttr("style"); 
+        }else{
+            $('.aside').hide();
+            $('.navbar').css('left','0px');
+            $('.main').css('padding-left','5px');
+        }
+    });   
+  </script>
+</body>
+</html>

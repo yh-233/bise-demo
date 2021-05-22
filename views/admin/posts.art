@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <title>文章管理</title>
+  <link rel="stylesheet" href="/admin/assets/vendors/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="/admin/assets/vendors/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/admin/assets/vendors/nprogress/nprogress.css">
+  <link rel="stylesheet" href="/admin/assets/css/admin.css">
+  <script src="/admin/assets/vendors/nprogress/nprogress.js"></script>
+</head>
+<body>
+  <script>NProgress.start()</script>
+
+  <div class="main" style="padding-left:0;">
+    <nav class="navbar" style="left:0;">
+      <button class="btn btn-default navbar-btn fa fa-bars"  id="asideBtn"></button>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/home/logout"><i class="fa fa-sign-out"></i>退出登陆</a></li>
+      </ul>
+    </nav>
+    <div class="container-fluid">
+      <div class="page-title">
+        <h1>所有文章</h1>
+        <a href="/admin/article-edit" class="btn btn-primary btn-xs">添加新文章</a>
+      </div>
+      <div class="page-action">
+        <ul class="pagination pagination-sm pull-right">
+          {{if articles.page > 1}}
+              <li><a href="/admin/article?page={{articles.page - 1}}">上一页</a></li>
+          {{/if}}
+          {{if articles.page == 3}}
+              <li><a href="/admin/article?page=1">{{1}}</a></li>
+          {{/if}}
+          {{if articles.page > 3}}
+              <li><a href="/admin/article?page=1">{{1}}</a></li>
+              <li class="disabled"><a>...</a></li>
+          {{/if}}
+          {{each articles.display}}
+              <li class="{{page != $value ? "" : "active"}}"><a href="/admin/article?page={{$value}}">{{$value}}</a></li>
+          {{/each}} 
+          {{if (articles.page + 2) == (articles.pages + 1)  && (articles.page + 2) != 3}}
+              <li><a href="/admin/article?page={{articles.pages}}">{{articles.pages}}</a></li>
+          {{/if}}
+          {{if (articles.page + 1) == (articles.pages - 1) && (articles.page + 1) != 2}}
+              <li><a href="/admin/article?page={{articles.page + 1}}">{{articles.page + 1}}</a></li>
+          {{/if}}
+          {{if articles.page < articles.pages}} 
+              {{if (articles.page + 2) == articles.pages}}
+                  <li><a href="/admin/article?page={{articles.pages}}">{{articles.pages}}</a></li>
+              {{/if}}
+              {{if (articles.page + 2) < articles.pages}}   
+                  <li class="disabled"><a>...</a></li>
+                  <li><a href="/admin/article?page={{articles.pages}}">{{articles.pages}}</a></li>
+              {{/if}}
+              <li><a href="/admin/article?page={{articles.page - 0 + 1}}">下一页</a></li>
+          {{/if}}
+        </ul>
+      </div>
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>标题</th>
+            <th>作者</th>
+            <th class="text-center">发表时间</th>
+            <th class="text-center" width="100">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+        {{each articles.records}}
+          <tr>
+            <td>{{$value.title}}</td>
+            <td>{{$value.author.username}}</td>
+            <td class="text-center">{{dateFormat($value.publishDate,'yyyy-mm-dd HH:MM')}}</td>
+            <td class="text-center">
+              <a href="/admin/article-edit?id={{@$value._id}}" class="btn btn-default btn-xs edit">编辑</a>
+              <a class="btn btn-danger btn-xs delete" data-toggle="modal" data-target=".confirm-modal" data-id="{{@$value._id}}">删除</a>
+            </td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="aside" style="display:none;">
+    <div class="profile">
+      <img class="avatar" src="{{userInfo && userInfo.avatar ? userInfo.avatar : '/admin/assets/img/default.png'}}">
+      <h3 class="name">{{userInfo && userInfo.username}}</h3>
+    </div>
+    <ul class="nav">
+      <li>
+        <a href="/home/?page=1"><i class="fa fa-dashboard"></i>首页</a>
+      </li>
+      <li class="active">
+        <a href="#menu-posts" data-toggle="collapse">
+          <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
+        </a>
+        <ul id="menu-posts" class="collapse in">
+          <li class="active"><a href="/admin/article?page=1">所有文章</a></li>
+          <li><a href="/admin/article-edit">写文章</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/admin/user?page=1"><i class="fa fa-users"></i>用户</a>
+      </li>
+    </ul>
+  </div>
+  <div class="modal fade confirm-modal">  
+      <div class="modal-dialog">  
+          <form class="modal-content message_align" action="/admin/article-delete" method="get">  
+              <div class="modal-header">  
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+                  <h4 class="modal-title">提示信息</h4>  
+              </div>  
+              <div class="modal-body">  
+                  <p>您确认要删除吗？</p>  
+              </div>  
+              <div class="modal-footer">  
+                  <input type="hidden" name="id" id="deleteArticleId"/>  
+                  <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+                  <input type="submit" class="btn btn-success" >  
+              </div>  
+          </form> 
+      </div>
+  </div>
+
+  <script src="/admin/assets/vendors/jquery/jquery.js"></script>
+  <script src="/admin/assets/vendors/bootstrap/js/bootstrap.js"></script>
+  <script>NProgress.done()</script>
+  <script type="text/javascript">
+        $('.delete').on('click',function(){
+            // console.log('1');
+            // 获取文章id
+            var id = $(this).attr('data-id');
+        $('#deleteArticleId').val(id);
+        })
+  </script>
+  <script type="text/javascript">
+    $('#asideBtn').click(function(){
+        $('#asideBtn').toggleClass('off');
+        if($('#asideBtn').hasClass('off')){
+            $('.aside').show();
+            $('.navbar').removeAttr("style"); 
+            $('.main').removeAttr("style"); 
+        }else{
+            $('.aside').hide();
+            $('.navbar').css('left','0px');
+            $('.main').css('padding-left','5px');
+        }
+    });   
+  </script>
+</body>
+</html>

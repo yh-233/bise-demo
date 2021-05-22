@@ -1,0 +1,145 @@
+        /* 这是自定义主题CSS */
+        /* 页脚*/
+        
+        footer {
+            padding-bottom: 30px;
+        }
+        /* 页面背景 */
+        
+        .bg {
+            top: 0;
+            left: 0;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            background-color: rgb(250, 250, 250);
+            z-index: -100;
+        }
+        /* 夜间模式 */
+        
+        .bg-dark {
+            background-color: rgb(30, 30, 30);
+        }
+        /* 顶部导航栏 */
+        
+        .navbar {
+            border: none;
+        }
+        
+        .navbar-brand {
+            font-size: 22px;
+        }
+        /* 顶部超大屏幕 */
+        
+        .jumbotron {
+            /* margin-top: 55px; */
+            background: url('/home/img/bg/80224060_p0.jpg') no-repeat center center;
+            color: white;
+        }
+        /* 超大屏幕下的导航 */
+        
+        @media (min-width: 768px) {
+            .navbar-c {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+        }
+        /* 缩略图 */
+        
+        .thumbnail {
+            position: relative;
+            padding: 0px;
+            /* padding-bottom: 10px; */
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .thumbnail:hover {
+            text-decoration: none;
+        }
+        
+        @media (min-width: 768px) {
+            .thumbnail:hover img {
+                transform: scale(1.1);
+                filter: opacity(80%);
+                transition: 1.25s all transform ease;
+            }
+            .post-info {
+                position: absolute;
+                bottom: -50px;
+                left: -500px;
+                width: 100%;
+                padding: 0 10px;
+                padding-bottom: 5px;
+                background-color: rgba(255, 255, 255, 0.8);
+                text-align: right;
+                transition: 1s all ease;
+            }
+            .thumbnail:hover .post-info {
+                bottom: 0;
+                left: 0;
+                transition: .5s all ease;
+            }
+            .post-info>.label {
+                border-radius: 3px;
+                display: inline;
+            }
+        }
+        
+        .thumbnail>img {
+            object-fit: cover;
+            transition: 0.5s transform ease;
+        }
+        
+        @media (max-width: 768px) {
+            .thumbnail {
+                padding: 0;
+            }
+            .post-info {
+                display: none;
+            }
+        }
+        /* 微信公众号浮动框 */
+        
+        .addWeChatModel {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 15px;
+            width: 315px;
+            height: 250px;
+            z-index: 99999;
+            background-color: rgb(250, 250, 250);
+            box-shadow: 1px 3px 10px #aaa;
+            border-radius: 7px;
+        }
+        
+        .addWeChatModel-title>h4 {
+            font-weight: 600;
+            margin: 15px;
+            display: inline-block;
+        }
+        
+        .addWeChatModel-title>.close {
+            margin-top: 15px;
+        }
+        
+        .addWeChatModel-img {
+            margin-top: 20px;
+            margin-left: 80px;
+            height: 135px;
+            width: 135px;
+            background: url(/home/img/WeChatModel/wx_create.png) no-repeat center center;
+            background-size: cover;
+        }
+        
+        @media (max-width: 768px) {
+            .addWeChatModel {
+                top: 50%;
+                left: 0;
+                right: 0;
+                margin: 0 auto;
+                transform: translateY(-50%);
+            }
+        }

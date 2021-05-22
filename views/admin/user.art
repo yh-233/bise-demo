@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>用户管理</title>
+    <link rel="stylesheet" href="/admin/assets/vendors/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/admin/assets/vendors/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/admin/assets/vendors/nprogress/nprogress.css">
+    <link rel="stylesheet" href="/admin/assets/css/admin.css">
+    <script src="/admin/assets/vendors/nprogress/nprogress.js"></script>
+</head>
+
+<body>
+    <script>
+        NProgress.start()
+    </script>
+
+    <div class="main" style="padding-left:0;">
+        <nav class="navbar" style="left:0;">
+            <button class="btn btn-default navbar-btn fa fa-bars" id="asideBtn"></button>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/home/logout"><i class="fa fa-sign-out"></i>退出登陆</a></li>
+            </ul>
+        </nav>
+        <div class="container-fluid">
+            <div class="page-title">
+                <h1>用户</h1>
+            </div>
+            <!-- 有错误信息时展示 -->
+            <!-- <div class="alert alert-danger">
+        <strong>错误！</strong>发生XXX错误
+      </div> -->
+            <div class="row">
+                <div class="col-md-4" id="modifyBox">
+                    <form id="userForm" action="{{link}}" method="post" enctype="multipart/form-data">
+                        <h2>{{titleTip}}</h2>
+                        <div class="form-group">
+                            <label>头像</label>
+                            <div class="form-group">
+                                <label class="form-image">
+                                    <input id="avatar" type="file" name="avatar" value="findUser && findUser.avatar">
+                                    <img src="{{findUser && findUser.avatar ? findUser.avatar : '/admin/assets/img/default.png'}}" style="object-fit: cover;" id="preview">
+                                    <i class="mask fa fa-upload"></i>
+                                </label>
+                                <input type="hidden" name="avatar" id="hiddenAvatar">
+                            </div>
+                            <p class="text-danger error">{{message}}</p>
+                        </div>
+                        <div class="form-group">
+                            <label>邮箱</label>
+                            <input name="email" class="form-control" type="email" placeholder="请输入邮箱" value="{{findUser && findUser.email}}">
+                        </div>
+                        <div class="form-group">
+                            <label>昵称</label>
+                            <input name="username" class="form-control" type="text" placeholder="请输入昵称" value="{{findUser && findUser.username}}">
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input name="password" class="form-control" type="text" placeholder="请输入密码">
+                        </div>
+                        <div class="form-group">
+                            <div class="radio-inline">
+                                <label><input type="radio" name="state" value="0" {{findUser && findUser.state == '0' ? 'checked' : ''}}>启用</label>
+                            </div>
+                            <div class="radio-inline">
+                                <label><input type="radio" name="state" value="1" {{findUser && findUser.state == '1' ? 'checked' : ''}}>禁用</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="radio-inline">
+                                <label><input type="radio" name="role" value="admin" {{findUser && findUser.role == 'admin' ? 'checked' : ''}}>超级管理员</label>
+                            </div>
+                            <div class="radio-inline">
+                                <label><input type="radio" name="role" value="normal" {{findUser && findUser.role == 'normal' ? 'checked' : ''}}>普通用户</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="{{btn}}">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    <div class="page-action">
+                        <!-- show when multiple checked -->
+                        <a class="btn btn-danger btn-sm" href="javascript:;" style="display: none">批量删除</a>
+                    </div>
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="40"><input type="checkbox"></th>
+                                <th class="text-center" width="80">头像</th>
+                                <th>邮箱</th>
+                                <th>昵称</th>
+                                <th>状态</th>
+                                <th>角色</th>
+                                <th class="text-center" width="100">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userBox">
+                        {{each users.records}}
+                            <tr>
+                                <td class="text-center"><input type="checkbox"></td>
+                                <td class="text-center">
+                                    <img class="avatar" src="{{$value.avatar}}">
+                                </td>
+                                <td>{{$value.email}}</td>
+                                <td>{{$value.username}}</td>
+                                <td>{{$value.state == 0 ? '启用' : '禁用'}}</td>
+                                <td>{{$value.role == 'admin' ? '管理员' : '普通用户'}}</td>
+                                <td class="text-center">
+                                    <a href="/admin/user?id={{@$value._id}}" class="btn btn-default btn-xs edit">编辑</a>
+                                    <a class="btn btn-danger btn-xs delete" data-toggle="modal" data-target=".confirm-modal" data-id="{{@$value._id}}">删除</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    <ul class="pagination">
+                        {{if users.page > 1}}
+                            <li><a href="/admin/user?page={{users.page - 1}}">上一页</a></li>
+                        {{/if}}
+                        {{if users.page == 3}}
+                            <li><a href="/admin/user?page=1">{{1}}</a></li>
+                        {{/if}}
+                        {{if users.page > 3}}
+                            <li><a href="/admin/user?page=1">{{1}}</a></li>
+                            <li class="disabled"><a>...</a></li>
+                        {{/if}}
+                        {{each users.display}}
+                            <li class="{{page != $value ? "" : "active"}}"><a href="/admin/user?page={{$value}}">{{$value}}</a></li>
+                        {{/each}} 
+                        {{if (users.page + 2) == (users.pages + 1)}}
+                            <li><a href="/admin/user?page={{users.pages}}">{{users.pages}}</a></li>
+                        {{/if}}
+                        {{if (users.page + 1) == (users.pages - 1)  && (users.page + 2) != 3}}
+                            <li><a href="/admin/user?page={{users.page + 1}}">{{users.page + 1}}</a></li>
+                        {{/if}}
+                        {{if users.page < users.pages}} 
+                            {{if (users.page + 2) == users.pages}}
+                                <li><a href="/admin/user?page={{users.pages}}">{{users.pages}}</a></li>
+                            {{/if}}
+                            {{if (users.page + 2) < users.pages}}   
+                                <li class="disabled"><a>...</a></li>
+                                <li><a href="/admin/user?page={{users.pages}}">{{users.pages}}</a></li>
+                            {{/if}}
+                            <li><a href="/admin/user?page={{users.page - 0 + 1}}">下一页</a></li>
+                        {{/if}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="aside" style="display:none;">
+        <div class="profile">
+            <img class="avatar" src="{{userInfo && userInfo.avatar ? userInfo.avatar : '/admin/assets/img/default.png'}}">
+            <h3 class="name">{{userInfo && userInfo.username}}</h3>
+        </div>
+        <ul class="nav">
+            <li>
+                <a href="/home/?page=1"><i class="fa fa-dashboard"></i>首页</a>
+            </li>
+            <li>
+                <a href="#menu-posts" class="collapsed" data-toggle="collapse">
+                    <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
+                </a>
+                <ul id="menu-posts" class="collapse">
+                    <li><a href="/admin/article?page=1">所有文章</a></li>
+                    <li><a href="/admin/article-edit">写文章</a></li>
+                </ul>
+            </li>
+            <li class="active">
+                <a href="/admin/user?page=1"><i class="fa fa-users"></i>用户</a>
+            </li>
+            
+        </ul>
+    </div>
+
+<div class="modal fade confirm-modal">  
+    <div class="modal-dialog">  
+        <form class="modal-content message_align" action="/admin/delete" method="get">  
+            <div class="modal-header">  
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>  
+                <h4 class="modal-title">提示信息</h4>  
+            </div>  
+            <div class="modal-body">  
+                <p>您确认要删除吗？</p>  
+            </div>  
+            <div class="modal-footer">  
+                <input type="hidden" name="id" id="deleteUserId"/>  
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>  
+                <input type="submit" class="btn btn-success" >  
+            </div>  
+        </form> 
+    </div>
+</div>
+    <script src="/admin/assets/vendors/jquery/jquery.js"></script>
+    <script src="/admin/assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script>
+        NProgress.done()
+    </script>
+    <script type="text/javascript">
+        $('.delete').on('click',function(){
+            // console.log('1');
+            // 获取用户id
+            var id = $(this).attr('data-id');
+        $('#deleteUserId').val(id);
+        })
+    </script>
+    <script type="text/javascript">
+    var file = document.querySelector('#avatar');
+    var preview = document.querySelector('#preview');
+    file.onchange = function () {
+      // 创建文件读取对象
+      var reader = new FileReader();
+      // 用户选择的文件列表
+      reader.readAsDataURL(this.files[0]);
+      // 监听onload事件
+      reader.onload = function () {
+        // 将文件读取结果显示在页面
+        preview.src = reader.result;
+      }
+    }
+  </script>
+  <script type="text/javascript">
+    $('#asideBtn').click(function(){
+        $('#asideBtn').toggleClass('off');
+        if($('#asideBtn').hasClass('off')){
+            $('.aside').show();
+            $('.navbar').removeAttr("style"); 
+            $('.main').removeAttr("style"); 
+        }else{
+            $('.aside').hide();
+            $('.navbar').css('left','0px');
+            $('.main').css('padding-left','5px');
+        }
+    });   
+  </script>
+</body>
+
+</html>
