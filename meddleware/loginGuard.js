@@ -6,7 +6,7 @@ const guard = (req, res, next) => {
         // 如果登陆 
         // 判断是否为普通用户
         if (req.session.role == 'normal') {
-            return res.redirect('/home?page=1');
+            return res.redirect('/home');
         }
         next();
     }

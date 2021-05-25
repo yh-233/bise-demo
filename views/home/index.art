@@ -40,7 +40,7 @@
 
 </head>
 
-<body style="padding-top: 50px;">
+<body class="body">
 
     <div class="bg"></div>
 
@@ -186,7 +186,7 @@
                             <a href="/home/article?id={{@$value._id}}" class="thumbnail">
                                 <img src="{{$value.cover}}" alt="" srcset="">
                                 <div class="post-info">
-                                    <h4 style="text-align: left;">{{$value.title.substr(0,8)}}</h4>
+                                    <h4 style="text-align: left;">{{$value.title.length > 8 ? $value.title.substr(0,8)+'...' : $value.title}}</h4>
                                     <p style="text-align: left;">{{$value.author.username}}</p>
                                     <span class="label label-danger">{{dateFormat($value.publishDate,'yyyy-mm-dd HH:MM')}}</span>
                                 </div>

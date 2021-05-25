@@ -15,7 +15,7 @@ module.exports = async(req, res) => {
             findArticle: findArticle,
             link: '/admin/article-modify?id=' + id,
             btn: '修改',
-            titleTip: '修改用户'
+            titleTip: '修改文章'
         });
         // res.send(user.email);
         // return;
@@ -24,7 +24,7 @@ module.exports = async(req, res) => {
         res.render('admin/post-add.art', {
             link: '/admin/article-add',
             btn: '提交',
-            titleTip: '添加新用户'
+            titleTip: '添加新文章'
         });
     }
 }

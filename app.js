@@ -69,6 +69,7 @@ const { nextTick } = require('process');
 app.use('/admin', require('./meddleware/loginGuard'));
 
 //为路由匹配路径
+app.use('/', home);
 app.use('/home', home);
 app.use('/admin', admin);
 app.use((err, req, res, next) => {

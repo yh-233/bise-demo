@@ -78,12 +78,12 @@
           <i class="fa fa-thumb-tack"></i>文章<i class="fa fa-angle-right"></i>
         </a>
         <ul id="menu-posts" class="collapse in">
-          <li><a href="/admin/article?page=1">所有文章</a></li>
+          <li><a href="/admin/article">所有文章</a></li>
           <li class="active"><a href="/admin/article-edit">写文章</a></li>
         </ul>
       </li>
       <li>
-        <a href="/admin/user?page=1"><i class="fa fa-users"></i>用户</a>
+        <a href="/admin/user"><i class="fa fa-users"></i>用户</a>
       </li>
     </ul>
   </div>

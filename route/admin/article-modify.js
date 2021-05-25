@@ -9,13 +9,13 @@ const path = require('path');
  */
 const { Article } = require('../../model/article');
 
-module.exports = (req, res) => {
+module.exports = async(req, res) => {
     // 要修改的用户id
     const id = req.query.id;
     // 创建表单解析对象
     const form = new formidable.IncomingForm();
     // 配置上传文件的存放路径
-    const uploadPath = path.join(__dirname, '../', '../', 'public', 'uploads', 'article-cover')
+    const uploadPath = path.join(__dirname, '../', '../', 'public', 'uploads', 'article-cover');
     form.uploadDir = uploadPath;
     // 保留上传文件后缀
     form.keepExtensions = true;
@@ -28,17 +28,24 @@ module.exports = (req, res) => {
          */
         // res.send(files);
         // 根据文件大小判断是否有上传图片
+        let coverPath = '/admin/assets/img/default.jpg';
+        const Path = files.cover.path;
         if (files.cover.size > 128) {
             const type = files.cover.type;
             if (type == "image/jpeg" || type == "image/png") {
+                const image = images(Path);
+                coverPath = Path.split('public')[1];
+                images(image).save(Path, {
+                    quality: 50 //保存图片到文件,图片质量为50
+                });
                 await Article.updateOne({ _id: id }, {
-                    cover: files.cover.path.split('public')[1]
+                    cover: coverPath
                 });
             } else {
-                fs.unlinkSync(uploadPath + files.cover.path.split('article-cover')[1]);
+                fs.unlinkSync(uploadPath + Path.split('article-cover')[1]);
             }
         } else {
-            fs.unlinkSync(uploadPath + files.cover.path.split('article-cover')[1]);
+            fs.unlinkSync(uploadPath + Path.split('article-cover')[1]);
         }
         // res.send(files.cover.path.split('public')[1]);
         // 解决因为没设置发布时间所导致的数据库publishDate值为null

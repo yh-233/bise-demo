@@ -27,7 +27,7 @@ module.exports = async(req, res) => {
         let users = await User.find({}).limit(pagesize).skip(start);
     */
     // 接收客户端传递的页码
-    const page = req.query.page;
+    const page = req.query.page || 1;
     let users = await pagination(User).find().page(page).size(5).display(2).exec();
 
     // 如果用户传递了id参数

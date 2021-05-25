@@ -26,12 +26,12 @@ module.exports = async(req, res) => {
             // 用户角色进行判断
             if (user.role == 'admin') {
                 // 超级管理员进入后台
-                res.redirect('/admin/user?page=1');
+                res.redirect('/admin/user');
             } else {
                 // 普通用户到博客首页
-                res.redirect('/home?page=1');
+                res.redirect('/home');
             }
-            res.redirect('/admin/user?page=1');
+            res.redirect('/admin/user');
             // res.send('成功!');
         } else {
             return res.status(400).render('admin/error', { msg: '邮箱或密码错误!' });

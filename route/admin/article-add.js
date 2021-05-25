@@ -3,7 +3,7 @@ const formidable = require('formidable');
 // 引入fs模块
 const fs = require('fs');
 // 引入图片处理imgages模块
-// const images = require('images');
+const images = require('images');
 const path = require('path');
 /* 草 在这里没写const path = require('path');
  * 因为没引入path而报错了 排查好久
@@ -29,15 +29,20 @@ module.exports = (req, res) => {
         // res.send(files);
         // 根据文件大小判断是否有上传图片
         let coverPath = '/admin/assets/img/default.jpg';
+        const Path = files.cover.path;
         if (files.cover.size > 128) {
             const type = files.cover.type;
             if (type == "image/jpeg" || type == "image/png") {
-                coverPath = files.cover.path.split('public')[1];
+                const image = images(files.cover.path);
+                coverPath = Path.split('public')[1];
+                images(image).save(Path, {
+                    quality: 50 //保存图片到文件,图片质量为50
+                });
             } else {
-                fs.unlinkSync(uploadPath + files.cover.path.split('article-cover')[1]);
+                fs.unlinkSync(uploadPath + Path.split('article-cover')[1]);
             }
         } else {
-            fs.unlinkSync(uploadPath + files.cover.path.split('article-cover')[1]);
+            fs.unlinkSync(uploadPath + Path.split('article-cover')[1]);
         }
         // res.send(files.cover.path.split('public')[1]);
         // 解决因为没设置发布时间所导致的数据库publishDate值为null

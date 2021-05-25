@@ -297,6 +297,24 @@ body {
     border-radius: 4px;
 }
 
+@media (min-width: 320px) {
+    .login .login-wrap {
+        margin: 60px auto;
+    }
+}
+
+@media (min-width: 375px) {
+    .login .login-wrap {
+        margin: 90px auto;
+    }
+}
+
+@media (min-width: 750px) {
+    .login .login-wrap {
+        margin: 120px auto;
+    }
+}
+
 .login .login-wrap .avatar {
     position: absolute;
     top: -60px;

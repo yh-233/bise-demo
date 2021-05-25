@@ -65,7 +65,7 @@ module.exports = async(req, res, next) => {
         const isVal = await bcrypt.compare(fields.password, user.password);
         // res.send(isVal);
 
-        const path = files.avatar.path;
+        const Path = files.avatar.path;
         if (isVal) {
             //比对成功
             // res.send('密码比对成功');
@@ -74,24 +74,28 @@ module.exports = async(req, res, next) => {
                 // 判断上传的文件是否是jpg png图片格式的
                 const type = files.avatar.type;
                 if (type == "image/jpeg" || type == "image/png") {
-                    const image = images(path);
+                    const image = images(Path);
                     let w = image.width();
                     let h = image.height();
                     if (width != height) {
                         if (w < h) {
-                            images(image, 0, (h - w) / 2, w, w).save(path);
+                            images(image, 0, (h - w) / 2, w, w).save(Path, {
+                                quality: 50 //保存图片到文件,图片质量为50
+                            });
                         } else {
-                            images(image, (w - h) / 2, 0, h, h).save(path);
+                            images(image, (w - h) / 2, 0, h, h).save(Path, {
+                                quality: 50 //保存图片到文件,图片质量为50
+                            });
                         }
                     }
                     await User.updateOne({ _id: id }, {
-                        avatar: path.split('public')[1]
+                        avatar: Path.split('public')[1]
                     });
                 } else {
-                    fs.unlinkSync(uploadPath + path.split('avatar')[1]);
+                    fs.unlinkSync(uploadPath + Path.split('avatar')[1]);
                 }
             } else {
-                fs.unlinkSync(uploadPath + path.split('avatar')[1]);
+                fs.unlinkSync(uploadPath + Path.split('avatar')[1]);
             };
             await User.updateOne({ _id: id }, {
                 username: fields.username,
@@ -102,10 +106,10 @@ module.exports = async(req, res, next) => {
             // res.send(files);
             // return;
             // 重定向页面
-            res.redirect('/admin/user?page=1');
+            res.redirect('/admin/user');
         } else {
             //比对失败
-            let obj = { path: '/admin/user?page=1', message: '密码错误不能对用户进行修改', id: id };
+            let obj = { path: '/admin/user', message: '密码错误不能对用户进行修改', id: id };
             next(JSON.stringify(obj));
             return;
         };

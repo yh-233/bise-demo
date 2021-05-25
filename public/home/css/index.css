@@ -1,4 +1,22 @@
         /* 这是自定义主题CSS */
+        
+        @media (max-width: 1200px) {
+            body {
+                padding-top: 50px !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 50px !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding-top: 100px !important;
+            }
+        }
         /* 页脚*/
         
         footer {

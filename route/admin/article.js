@@ -6,7 +6,7 @@ const pagination = require('mongoose-sex-page');
 
 module.exports = async(req, res) => {
     // 接收客户端传递的页码
-    const page = req.query.page;
+    const page = req.query.page || 1;
     // 标识 当前访问的是文章管理页面
     req.app.locals.currentLink = 'article';
     // 查询所有文章数据

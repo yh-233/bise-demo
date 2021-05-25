@@ -8,6 +8,7 @@ const formidable = require('formidable');
 const path = require('path');
 // 引入fs模块
 const fs = require('fs');
+const images = require('images');
 
 module.exports = async(req, res, next) => {
     /*
@@ -75,17 +76,21 @@ module.exports = async(req, res, next) => {
 
         // 根据文件大小判断是否有上传图片
         let avatarPath = '/admin/assets/img/default.png';
+        const Path = files.avatar.path;
         if (files.avatar.size > 128) {
             // 判断上传的文件是否是jpg png图片格式的
-            const path = files.avatar.path;
             const type = files.avatar.type;
             if (type == "image/jpeg" || type == "image/png") {
-                avatarPath = path.split('public')[1];
+                const image = images(Path);
+                avatarPath = Path.split('public')[1];
+                images(image).save(Path, {
+                    quality: 50 //保存图片到文件,图片质量为50
+                });
             } else {
-                fs.unlinkSync(uploadPath + path.split('avatar')[1]);
+                fs.unlinkSync(uploadPath + Path.split('avatar')[1]);
             }
         } else {
-            fs.unlinkSync(uploadPath + path.split('avatar')[1]);
+            fs.unlinkSync(uploadPath + Path.split('avatar')[1]);
         }
         // res.send(files);
         // res.send({
@@ -106,7 +111,7 @@ module.exports = async(req, res, next) => {
             state: fields.state
         });
         // 将页面重定向到用户列表页面
-        res.redirect('/admin/user?page=1');
+        res.redirect('/admin/user');
     });
     // 将用户信息添加到数据库中
     // await User.create(req.body);

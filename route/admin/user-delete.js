@@ -12,5 +12,5 @@ module.exports = async(req, res) => {
         fs.unlinkSync(uploadPath + user.avatar.split('avatar')[1]);
     }
     await User.findOneAndDelete(id);
-    res.redirect('/admin/user?page=1');
+    res.redirect('/admin/user');
 }
